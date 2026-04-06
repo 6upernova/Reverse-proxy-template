@@ -147,6 +147,15 @@ server {
 
 ---
 
+### Reload ngnix conf
+
+
+
+```bash
+docker exec nginx-proxy nginx -s reload
+```
+---
+
 ##  Proxy snippet
 
 ### snippets/proxy.conf

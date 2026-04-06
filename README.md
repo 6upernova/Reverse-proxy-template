@@ -19,6 +19,7 @@ Este repositorio contiene una configuración simple y eficiente para levantar un
 │   └── ssl/ (opcional)
 ├── certbot/
 │   └── www/
+
 ├── frontend/
 ├── backend/
 ```
@@ -28,9 +29,12 @@ Este repositorio contiene una configuración simple y eficiente para levantar un
 ##  Servicios
 
 * **nginx** → Reverse proxy (entrada principal HTTP/HTTPS)
+* **certbot** → Generación y renovación de SSL
+
+### App web levantada dentro de la misma red docker (proxy_net)
 * **frontend** → App estática (ej: React/Vite build)
 * **backend** → API (ej: Go en puerto 8080)
-* **certbot** → Generación y renovación de SSL
+
 
 ---
 
@@ -71,6 +75,14 @@ services:
     networks:
       - proxy_net
 
+  certbot:
+    image: certbot/certbot
+    volumes:
+      - ./certbot/www:/var/www/certbot
+      - ./certbot/conf:/etc/letsencrypt
+
+// Estos pueden estar levantados dentro de otro contenedor pero dentro de la mismo network (proxy_net)
+
   frontend:
     build: ./frontend
     networks:
@@ -81,11 +93,6 @@ services:
     networks:
       - proxy_net
 
-  certbot:
-    image: certbot/certbot
-    volumes:
-      - ./certbot/www:/var/www/certbot
-      - ./certbot/conf:/etc/letsencrypt
 
 networks:
   proxy_net:
